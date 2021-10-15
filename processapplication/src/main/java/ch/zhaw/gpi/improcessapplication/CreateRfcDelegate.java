@@ -6,14 +6,14 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ch.zhaw.gpi.improcessapplication.itsm_mock.ItsmService;
 import ch.zhaw.gpi.improcessapplication.itsm_mock.Rfc;
+import ch.zhaw.gpi.improcessapplication.itsm_mock.RfcRepository;
 
 @Named("createRfcAdapter")
 public class CreateRfcDelegate implements JavaDelegate {
 
     @Autowired
-    private ItsmService itsmService;
+    private RfcRepository rfcRepository;
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
@@ -27,7 +27,9 @@ public class CreateRfcDelegate implements JavaDelegate {
         rfc.setrDescription(rfcDescription);
         rfc.setrReasons(rfcReasons);
 
-        Long rfcId = itsmService.postRfc(rfc);
+        rfc = rfcRepository.save(rfc);
+
+        Long rfcId = rfc.getrId();
 
         execution.setVariable("rfc_id", rfcId);
     }
